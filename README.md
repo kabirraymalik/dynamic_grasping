@@ -1,0 +1,1 @@
+Simulation and control for a mobile robot arm to dynamically grasp objects with varying relative velocities to the robot base. 
