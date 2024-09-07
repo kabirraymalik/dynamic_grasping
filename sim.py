@@ -6,7 +6,7 @@ from control import *
 view_refresh_rate = 100 #Hz
 
 #m = mujoco.MjModel.from_xml_path('resources/unitree_go2/scene.xml')
-m = mujoco.MjModel.from_xml_path('resources/trossen_wx250s/scene.xml')
+m = mujoco.MjModel.from_xml_path('resources/trossen_wx250s_modified/scene.xml')
 d = mujoco.MjData(m)
 
 goalpos = []
