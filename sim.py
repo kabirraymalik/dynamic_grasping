@@ -22,13 +22,12 @@ def controller(model, data, robot):
     data.ctrl = robot.motor_control()
 
 robot = Bot(init_control(m,d))
-#mujoco.set_mjcb_control(controller)
 
 paused = False
 last_view_refresh = time.time()
 last_physics_refresh = time.time()
 
-with mujoco.viewer.launch_passive(m,d, show_left_ui = True, show_right_ui = True) as viewer:
+with mujoco.viewer.launch_passive(m,d, show_left_ui = False, show_right_ui = False) as viewer:
     while viewer.is_running():
         start_step_time = time.time()
         if not paused:
