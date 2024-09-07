@@ -1,6 +1,7 @@
 import time
 import mujoco
 import mujoco.viewer
+from control import *
 
 view_refresh_rate = 100 #Hz
 
@@ -9,35 +10,35 @@ m = mujoco.MjModel.from_xml_path('resources/trossen_wx250s/scene.xml')
 d = mujoco.MjData(m)
 
 goalpos = []
-currpos = []
 
-def init_controller(model,data):
-    start_pos = d.qpos.copy()
-    for i in range(0, len(d.ctrl)):
-        goalpos.append(start_pos[i])
-        currpos.append(start_pos[i])
+def init_control(model,data):
+    currpos = []
+    for i in range(0, len(data.ctrl)):
+        currpos.append(data.qpos[i])
+    return currpos
 
-def controller(model, data):
-    pos = data.qpos.copy()
-    for i in range(0, len(d.ctrl)):
-        currpos.append(pos[i])
-    pass
+def controller(model, data, robot):
+    robot.update_state(data.qpos.copy(), data.qvel.copy())
+    data.ctrl = robot.motor_control()
+    data.qvel[0] = 5
 
-init_controller(m,d)
-mujoco.set_mjcb_control(controller)
+robot = Bot(init_control(m,d))
+#mujoco.set_mjcb_control(controller)
 
 paused = False
 last_view_refresh = time.time()
 last_physics_refresh = time.time()
 
-with mujoco.viewer.launch_passive(m,d) as viewer:
+with mujoco.viewer.launch_passive(m,d, show_left_ui = False, show_right_ui = False) as viewer:
     while viewer.is_running():
         start_step_time = time.time()
         if not paused:
 
             #timing physics
             if last_physics_refresh < (time.time() - m.opt.timestep):
-                mujoco.mj_step(m,d)
+                mujoco.mj_step1(m,d)
+                controller(m, d, robot)
+                mujoco.mj_step2(m,d)
                 last_physics_refresh = time.time()
             
             #timing view
@@ -46,5 +47,6 @@ with mujoco.viewer.launch_passive(m,d) as viewer:
                     viewer.opt.flags[mujoco.mjtVisFlag.mjVIS_CONTACTPOINT] = True
                 last_view_refresh = time.time()
                 viewer.sync()
+                robot.print_state()
 
 
