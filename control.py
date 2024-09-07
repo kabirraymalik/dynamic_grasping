@@ -20,6 +20,9 @@ class Bot():
         self.Kp = 0.00006
         self.Ki = 0.00002
         self.Kd = 0.00001
+        #self.Kp = 0.6
+        #self.Ki = 0.2
+        #self.Kd = 0.1
         self.start_time = time.time()
 
     def motor_control(self):

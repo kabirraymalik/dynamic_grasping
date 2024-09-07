@@ -5,7 +5,7 @@ from control import *
 
 view_refresh_rate = 100 #Hz
 
-m = mujoco.MjModel.from_xml_path('resources/unitree_go2/scene.xml')
+#m = mujoco.MjModel.from_xml_path('resources/unitree_go2/scene.xml')
 m = mujoco.MjModel.from_xml_path('resources/trossen_wx250s/scene.xml')
 d = mujoco.MjData(m)
 
@@ -20,7 +20,6 @@ def init_control(model,data):
 def controller(model, data, robot):
     robot.update_state(data.qpos.copy(), data.qvel.copy())
     data.ctrl = robot.motor_control()
-    data.qvel[0] = 5
 
 robot = Bot(init_control(m,d))
 #mujoco.set_mjcb_control(controller)
@@ -29,7 +28,7 @@ paused = False
 last_view_refresh = time.time()
 last_physics_refresh = time.time()
 
-with mujoco.viewer.launch_passive(m,d, show_left_ui = False, show_right_ui = False) as viewer:
+with mujoco.viewer.launch_passive(m,d, show_left_ui = True, show_right_ui = True) as viewer:
     while viewer.is_running():
         start_step_time = time.time()
         if not paused:
